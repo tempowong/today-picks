@@ -3,6 +3,7 @@ import { useState } from "react";
 import boardData from "../generated/board.json";
 import { qaHistory, qaToday } from "./qaBoard.ts";
 import { confidenceLabel } from "../domain/analyze.ts";
+import { editionWaitLine, filterToday } from "../domain/edition.ts";
 import { EDITION_WINDOWS, type EditionWindow, type HistoryRow, type MatchListRow } from "../domain/types.ts";
 import { useDesktop } from "../useDesktop.ts";
 
@@ -77,12 +78,14 @@ function counts(rows: { stamp: string }[], labels: ["取" | "棄" | "觀", strin
 
 function leftOf(row: MatchListRow): string {
   const odds = row.path.water.inPlayOdds;
+  if (row.decision.kind === "即場觀察" && odds?.status === "suspended") return "暫停 ---";
   if (row.decision.kind === "即場觀察" && odds && odds.status === "published") {
     return `即場 HAD ${odds.value.toFixed(2)}`;
   }
   if (row.decision.kind === "開波後追蹤" && row.decision.inPlayOdds.status === "published") {
     return `即場 ${row.decision.inPlayOdds.value.toFixed(2)}`;
   }
+  if (row.decision.kind === "原選已結算觀察") return `原選 ${row.decision.original.selection}`;
   if (row.decision.kind === "暫停受注" || row.decision.kind === "即場暫停") return "暫停 ---";
   if (row.decision.kind === "棄單") return row.decision.code === "其他" ? "棄單" : `${row.decision.code} 棄單`;
   return row.hero;
@@ -93,7 +96,7 @@ function rightOf(row: MatchListRow): { text: string; dim: boolean } {
   return { text, dim: row.lineConfidence.kind === "不適用" || text === "-" };
 }
 
-function TodayCard(props: { row: MatchListRow; selected?: boolean }) {
+function TodayCard(props: { row: MatchListRow; selected?: boolean; search?: { phase?: string; preview?: string } }) {
   const right = rightOf(props.row);
   const meta = [
     props.row.publishedAtWindow ? `刊於 ${props.row.publishedAtWindow}` : "",
@@ -106,6 +109,7 @@ function TodayCard(props: { row: MatchListRow; selected?: boolean }) {
     <Link
       to="/m/$matchId"
       params={{ matchId: props.row.id }}
+      search={props.search ?? {}}
       className={props.selected ? "card selected" : "card"}
       data-match-id={props.row.id}
     >
@@ -159,13 +163,15 @@ function HistoryCard(props: { row: HistoryRow; selected?: boolean }) {
 
 function Steps(props: { row: MatchListRow }) {
   const [open, setOpen] = useState<Record<string, boolean>>({ "1": true });
-  const bodies = [
+  const bodies = props.row.stepNotes ?? [
     "只讀 bet.hkjc.com/ch/football/home 與 football.hkjc.com。先 HAD，有刊出再 HHA／HDC／HIL。電視標記不是市場。",
     props.row.path.water.band
       ? `賽前水位帶：${props.row.path.water.band}。即場價不另分類。`
       : "無賽前水位可分類。即場價只標「即場」，不觸發或解除 F2／F3。",
     `盤口 ${props.row.path.depth.line}，${props.row.path.depth.depth}。${props.row.path.depth.inPlayDescriptiveOnly ? "即場盤深只作描述。" : ""}`,
-    "同場地近績未見於這次公開提取，n 不補至 10。F2／F3 因此不綁定。",
+    props.row.path.record.n == null
+      ? "同場地近績未見於這次公開提取，n 不補至 10。F2／F3 因此不綁定。"
+      : `同場地 n 為 ${props.row.path.record.n}，不補至 10。${props.row.path.record.binding}。`,
     `意圖：${props.row.path.intent}。只跟賽前。`,
   ];
   const titles = ["來源", "水位帶", "盤深（含倒掛）", "戰績", "操盤意圖"];
@@ -206,6 +212,7 @@ function TodayDetail(props: { row: MatchListRow; desktop: boolean }) {
         {props.row.phase === "進行中" ? ` · 即場${props.row.inPlayUpdatedAtHkt ? ` · 更新 ${props.row.inPlayUpdatedAtHkt}` : ""}` : ""}
         {props.row.officialScore ? ` · 官果 ${props.row.officialScore}` : ""}
         {props.row.decision.kind === "開波後追蹤" ? " · 原選未結算" : ""}
+        {props.row.decision.kind === "原選已結算觀察" ? " · 原選已結算" : ""}
       </p>
       <TeamVs home={props.row.home} away={props.row.away} />
       <div className="card-top" style={{ marginTop: 16 }}>
@@ -214,10 +221,12 @@ function TodayDetail(props: { row: MatchListRow; desktop: boolean }) {
           <p className="slot">
             {props.row.decision.kind === "開波後追蹤"
               ? "更新心水"
-              : props.row.decision.kind === "即場暫停" || props.row.decision.kind === "暫停受注"
-                ? "暫停"
-                : props.row.decision.kind === "即場觀察" || props.row.decision.kind === "賽前棄單即場更新"
-                  ? "即場觀察"
+              : props.row.decision.kind === "原選已結算觀察" ||
+                  props.row.decision.kind === "即場觀察" ||
+                  props.row.decision.kind === "賽前棄單即場更新"
+                ? "即場觀察"
+                : props.row.decision.kind === "即場暫停" || props.row.decision.kind === "暫停受注"
+                  ? "暫停"
                   : props.row.stamp === "取"
                     ? "最終心水"
                     : "棄單原因"}
@@ -276,9 +285,8 @@ export function TodayPage(props: { matchId?: string; search: { phase?: string; p
     );
   }
   const todayRows = preview === "qa" ? qaToday : preview === "empty" ? [] : board.today;
-  const rows = phase === "全部" ? todayRows : todayRows.filter((row) => row.phase === phase);
-  const tracked = todayRows.find((row) => row.phase === "進行中");
-  const selected = todayRows.find((row) => row.id === props.matchId) ?? tracked ?? rows[0] ?? todayRows[0];
+  const rows = filterToday(todayRows, phase);
+  const selected = props.matchId ? todayRows.find((row) => row.id === props.matchId) : rows.find((row) => row.phase === "進行中") ?? rows[0];
   const showDetail = Boolean(props.matchId) || desktop;
   return (
     <main className="board">
@@ -298,8 +306,8 @@ export function TodayPage(props: { matchId?: string; search: { phase?: string; p
         })}
       </div>
       {preview === "qa" ? <p className="wait">示範佔位，不是本刊</p> : null}
-      {preview === "between" || (preview !== "qa" && board.waiting) ? (
-        <p className="wait">{preview === "between" ? "等待 19:00 定時提取並刊出" : board.waiting}</p>
+      {preview !== "qa" && (preview === "between" || board.waiting) ? (
+        <p className="wait">{editionWaitLine(board.nextWindow ?? null) ?? board.waiting}</p>
       ) : null}
       <div className="counts">
         {counts(todayRows, [
@@ -325,19 +333,38 @@ export function TodayPage(props: { matchId?: string; search: { phase?: string; p
           <button
             key={item}
             type="button"
-            className={item === phase || (phase === "全部" && item === "進行中") ? "phase on" : "phase"}
-            onClick={() => navigate({ to: props.matchId ? "/m/$matchId" : "/", params: props.matchId ? { matchId: props.matchId } : {}, search: { phase: item } })}
+            className={item === phase ? "phase on" : "phase"}
+            onClick={() =>
+              navigate({
+                to: props.matchId ? "/m/$matchId" : "/",
+                params: props.matchId ? { matchId: props.matchId } : {},
+                search: {
+                  ...(props.search.preview ? { preview: props.search.preview } : {}),
+                  ...(phase === item ? {} : { phase: item }),
+                },
+              })
+            }
           >
             {item}
           </button>
         ))}
       </div>
-      {preview === "empty" || rows.length === 0 ? <p className="empty">今日未有已核對場次</p> : null}
+      {preview === "empty" || rows.length === 0 ? (
+        <p className="empty">{preview === "empty" || todayRows.length === 0 ? "今日未有已核對場次" : "沒有符合此篩選的場次"}</p>
+      ) : null}
       <div className="split">
         {preview !== "empty" && (!props.matchId || desktop) && (
           <div className="list">
             {rows.map((row) => (
-              <TodayCard key={row.id} row={row} selected={desktop && row.id === selected?.id} />
+              <TodayCard
+                key={row.id}
+                row={row}
+                selected={desktop && row.id === selected?.id}
+                search={{
+                  ...(phase === "全部" ? {} : { phase }),
+                  ...(preview === "live" ? {} : { preview }),
+                }}
+              />
             ))}
             <div className="pad-bottom" />
           </div>
@@ -435,7 +462,7 @@ export function HistoryPage(props: { matchId?: string; search: { filter?: string
                   <p className="conf dim">盤口信心 {confidenceLabel(selected.lineConfidence)}</p>
                 </div>
               </div>
-              <p className="invalid">結算對原選與官果。棄單與即場觀察不入帳。完場後不再分析即場盤口。</p>
+              <p className="invalid">{selected.note ?? "結算對原選與官果。棄單與即場觀察不入帳。完場後不再分析即場盤口。"}</p>
             </article>
           </div>
         ) : null}

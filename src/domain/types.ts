@@ -174,6 +174,8 @@ export type MatchListRow = {
   invalidation: string;
   path: FiveStepPath;
   filters: HardFilters;
+  /** Match-specific five-step copy. Absent on layout fixtures that use the generic sentences. */
+  stepNotes?: [string, string, string, string, string];
 };
 
 export type HistoryRow = {
@@ -188,6 +190,8 @@ export type HistoryRow = {
   lineConfidence: LineConfidence;
   publishedAtWindow?: EditionWindow;
   decisionKind: Decision["kind"];
+  /** Settlement caution for this match. Not a new tip. */
+  note?: string;
 };
 
 export const EDITION_WINDOWS = ["07:00", "10:00", "13:00", "16:00", "19:00", "22:00"] as const;

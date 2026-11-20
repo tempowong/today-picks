@@ -217,7 +217,9 @@ export function analyzeMatch(match: RawMatch, window: EditionWindow): { today?: 
     invalidation:
       decision.kind === "棄單"
         ? "失效條件  本場賽前已棄單。開波後可繼續更新觀察，但不可變成即場推介。"
-        : "失效條件  上盤賽前水位低於 1.75，且同場地勝率仍未達 60%，本場作廢。",
+        : f2 === "觸發"
+          ? "失效條件  上盤賽前水位低於 1.75，且同場地勝率仍未達 60%，本場作廢。"
+          : "失效條件  開賽前盤口或水位再變，須重核。",
     path,
     filters,
   };
