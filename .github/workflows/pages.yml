@@ -4,9 +4,17 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  schedule:
+    # 07:00 10:00 13:00 16:00 19:00 22:00 HKT. No run from 23:00 to 07:00.
+    - cron: "0 23 * * *"
+    - cron: "0 2 * * *"
+    - cron: "0 5 * * *"
+    - cron: "0 8 * * *"
+    - cron: "0 11 * * *"
+    - cron: "0 14 * * *"
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -24,6 +32,18 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - name: Fetch the open edition window
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        continue-on-error: true
+        run: node --experimental-strip-types scripts/fetch-board.mjs
+      - name: Keep the published edition in the repo
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        run: |
+          git config user.email "tempowong28@gmail.com"
+          git config user.name "TEMPO WONG"
+          git add src/generated/board.json
+          git diff --cached --quiet || git commit -m "Publish the scheduled edition"
+          git push
       - run: npm run build
         env:
           GITHUB_PAGES: "true"

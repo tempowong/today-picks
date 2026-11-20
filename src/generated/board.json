@@ -1,0 +1,441 @@
+{
+  "beforeFirst": false,
+  "waiting": "等待 22:00 定時提取並刊出",
+  "nowHkt": "20:59",
+  "date": "2026-11-20",
+  "currentWindow": "19:00",
+  "nextWindow": "22:00",
+  "job": {
+    "window": "19:00",
+    "status": "已刊出",
+    "fetchedAtHkt": "20:59",
+    "sources": [
+      "bet.hkjc.com",
+      "football.hkjc.com"
+    ]
+  },
+  "lastSuccessAtHkt": "20:59",
+  "fetch": {
+    "bet": {
+      "url": "https://bet.hkjc.com/ch/football/home",
+      "status": 200,
+      "bytes": 4676
+    },
+    "football": {
+      "url": "https://football.hkjc.com/zh-hk/home",
+      "status": 200,
+      "bytes": 2924065
+    },
+    "odds": "info.cld.hkjc.com/graphql/base-get matchList (the public query used by bet.hkjc.com/ch/football/home)",
+    "scope": "Hong Kong calendar day of this edition only. The multi-day coupon is not listed."
+  },
+  "today": [
+    {
+      "id": "FB9191",
+      "kickoffHkt": "20:45",
+      "phase": "進行中",
+      "home": "卡爾巴FC",
+      "away": "FC沙迦",
+      "decision": {
+        "kind": "即場觀察",
+        "stamp": "觀",
+        "heroLabel": "即場觀察",
+        "firstSeenInPlay": true,
+        "lineConfidence": {
+          "kind": "不適用",
+          "percent": null
+        },
+        "reason": "開波後先見，不開新心水。"
+      },
+      "hero": "即場觀察，不開新心水",
+      "stamp": "觀",
+      "lineConfidence": {
+        "kind": "不適用",
+        "percent": null
+      },
+      "inPlayUpdatedAtHkt": "20:58",
+      "flags": [
+        "即場觀察"
+      ],
+      "invalidation": "失效條件  入球、紅牌、暫停受注、盤口撤銷或完場，本觀察即失效，須重核。",
+      "path": {
+        "source": {
+          "pools": [
+            "HAD"
+          ],
+          "officialPreview": {
+            "kind": "none"
+          },
+          "homePage": "https://bet.hkjc.com/ch/football/home"
+        },
+        "water": {
+          "preMatchOdds": null,
+          "band": null,
+          "inPlayOdds": {
+            "status": "published",
+            "value": 8.5,
+            "isPreMatch": false,
+            "label": "即場",
+            "inPlayUpdatedAtHkt": "20:58",
+            "source": "bet.hkjc.com",
+            "verified": true
+          }
+        },
+        "depth": {
+          "line": "即場盤口只作描述",
+          "depth": "其他",
+          "inverted": false,
+          "invertedShallowFollow": false,
+          "inPlayDescriptiveOnly": true
+        },
+        "record": {
+          "n": null,
+          "wins": null,
+          "wUpper": null,
+          "uLower": null,
+          "binding": "不綁定",
+          "sameVenue": false
+        },
+        "intent": "無"
+      },
+      "filters": {
+        "f1": "未觸發",
+        "f2": "不適用",
+        "f3": "不適用"
+      }
+    },
+    {
+      "id": "FB9196",
+      "kickoffHkt": "21:00",
+      "phase": "未開",
+      "home": "艾杜哈尼",
+      "away": "卡塔爾SC",
+      "decision": {
+        "kind": "取場",
+        "pick": {
+          "market": "HDC",
+          "selection": "卡塔爾SC +1.5/+2",
+          "odds": {
+            "status": "published",
+            "value": 1.77,
+            "isPreMatch": true,
+            "source": "bet.hkjc.com",
+            "verified": true
+          },
+          "lineConfidence": {
+            "kind": "待公式",
+            "percent": null
+          },
+          "publishedAtWindow": "19:00"
+        },
+        "reason": "卡塔爾SC +1.5/+2，賽前 1.77，低水。同場地戰績未刊於公開頁，F2／F3 不綁定。"
+      },
+      "hero": "HDC  卡塔爾SC +1.5/+2  1.77",
+      "stamp": "取",
+      "lineConfidence": {
+        "kind": "待公式",
+        "percent": null
+      },
+      "publishedAtWindow": "19:00",
+      "flags": [
+        "數據缺失"
+      ],
+      "invalidation": "失效條件  上盤賽前水位低於 1.75，且同場地勝率仍未達 60%，本場作廢。",
+      "path": {
+        "source": {
+          "pools": [
+            "HAD",
+            "HHA",
+            "HDC",
+            "HIL"
+          ],
+          "officialPreview": {
+            "kind": "none"
+          },
+          "homePage": "https://bet.hkjc.com/ch/football/home"
+        },
+        "water": {
+          "preMatchOdds": {
+            "status": "published",
+            "value": 1.77,
+            "isPreMatch": true,
+            "source": "bet.hkjc.com",
+            "verified": true
+          },
+          "band": "低水"
+        },
+        "depth": {
+          "line": "+1.5/+2",
+          "depth": "其他",
+          "inverted": false,
+          "invertedShallowFollow": false,
+          "inPlayDescriptiveOnly": false
+        },
+        "record": {
+          "n": null,
+          "wins": null,
+          "wUpper": null,
+          "uLower": null,
+          "binding": "不綁定",
+          "sameVenue": false
+        },
+        "intent": "正向控賠"
+      },
+      "filters": {
+        "f1": "未觸發",
+        "f2": "不適用",
+        "f3": "不適用"
+      }
+    },
+    {
+      "id": "FB9197",
+      "kickoffHkt": "21:00",
+      "phase": "未開",
+      "home": "艾薩德",
+      "away": "盧沙爾SC",
+      "decision": {
+        "kind": "取場",
+        "pick": {
+          "market": "HDC",
+          "selection": "盧沙爾SC +1/+1.5",
+          "odds": {
+            "status": "published",
+            "value": 1.76,
+            "isPreMatch": true,
+            "source": "bet.hkjc.com",
+            "verified": true
+          },
+          "lineConfidence": {
+            "kind": "待公式",
+            "percent": null
+          },
+          "publishedAtWindow": "19:00"
+        },
+        "reason": "盧沙爾SC +1/+1.5，賽前 1.76，低水。同場地戰績未刊於公開頁，F2／F3 不綁定。"
+      },
+      "hero": "HDC  盧沙爾SC +1/+1.5  1.76",
+      "stamp": "取",
+      "lineConfidence": {
+        "kind": "待公式",
+        "percent": null
+      },
+      "publishedAtWindow": "19:00",
+      "flags": [
+        "數據缺失"
+      ],
+      "invalidation": "失效條件  上盤賽前水位低於 1.75，且同場地勝率仍未達 60%，本場作廢。",
+      "path": {
+        "source": {
+          "pools": [
+            "HAD",
+            "HHA",
+            "HDC",
+            "HIL"
+          ],
+          "officialPreview": {
+            "kind": "none"
+          },
+          "homePage": "https://bet.hkjc.com/ch/football/home"
+        },
+        "water": {
+          "preMatchOdds": {
+            "status": "published",
+            "value": 1.76,
+            "isPreMatch": true,
+            "source": "bet.hkjc.com",
+            "verified": true
+          },
+          "band": "低水"
+        },
+        "depth": {
+          "line": "+1/+1.5",
+          "depth": "其他",
+          "inverted": false,
+          "invertedShallowFollow": false,
+          "inPlayDescriptiveOnly": false
+        },
+        "record": {
+          "n": null,
+          "wins": null,
+          "wUpper": null,
+          "uLower": null,
+          "binding": "不綁定",
+          "sameVenue": false
+        },
+        "intent": "正向控賠"
+      },
+      "filters": {
+        "f1": "未觸發",
+        "f2": "不適用",
+        "f3": "不適用"
+      }
+    },
+    {
+      "id": "FB9190",
+      "kickoffHkt": "23:25",
+      "phase": "未開",
+      "home": "沙比阿爾阿里",
+      "away": "阿吉曼會",
+      "decision": {
+        "kind": "取場",
+        "pick": {
+          "market": "HDC",
+          "selection": "沙比阿爾阿里 -1",
+          "odds": {
+            "status": "published",
+            "value": 1.86,
+            "isPreMatch": true,
+            "source": "bet.hkjc.com",
+            "verified": true
+          },
+          "lineConfidence": {
+            "kind": "待公式",
+            "percent": null
+          },
+          "publishedAtWindow": "19:00"
+        },
+        "reason": "沙比阿爾阿里 -1，賽前 1.86，中水。同場地戰績未刊於公開頁，F2／F3 不綁定。"
+      },
+      "hero": "HDC  沙比阿爾阿里 -1  1.86",
+      "stamp": "取",
+      "lineConfidence": {
+        "kind": "待公式",
+        "percent": null
+      },
+      "publishedAtWindow": "19:00",
+      "flags": [
+        "數據缺失"
+      ],
+      "invalidation": "失效條件  上盤賽前水位低於 1.75，且同場地勝率仍未達 60%，本場作廢。",
+      "path": {
+        "source": {
+          "pools": [
+            "HAD",
+            "HHA",
+            "HDC",
+            "HIL"
+          ],
+          "officialPreview": {
+            "kind": "none"
+          },
+          "homePage": "https://bet.hkjc.com/ch/football/home"
+        },
+        "water": {
+          "preMatchOdds": {
+            "status": "published",
+            "value": 1.86,
+            "isPreMatch": true,
+            "source": "bet.hkjc.com",
+            "verified": true
+          },
+          "band": "中水"
+        },
+        "depth": {
+          "line": "-1",
+          "depth": "深盤",
+          "inverted": false,
+          "invertedShallowFollow": false,
+          "inPlayDescriptiveOnly": false
+        },
+        "record": {
+          "n": null,
+          "wins": null,
+          "wUpper": null,
+          "uLower": null,
+          "binding": "不綁定",
+          "sameVenue": false
+        },
+        "intent": "無"
+      },
+      "filters": {
+        "f1": "未觸發",
+        "f2": "不適用",
+        "f3": "不適用"
+      }
+    },
+    {
+      "id": "FB9187",
+      "kickoffHkt": "23:30",
+      "phase": "未開",
+      "home": "艾加拉法",
+      "away": "多哈艾阿拉比",
+      "decision": {
+        "kind": "取場",
+        "pick": {
+          "market": "HDC",
+          "selection": "艾加拉法 +0/+0.5",
+          "odds": {
+            "status": "published",
+            "value": 1.82,
+            "isPreMatch": true,
+            "source": "bet.hkjc.com",
+            "verified": true
+          },
+          "lineConfidence": {
+            "kind": "待公式",
+            "percent": null
+          },
+          "publishedAtWindow": "19:00"
+        },
+        "reason": "艾加拉法 +0/+0.5，賽前 1.82，交界。同場地戰績未刊於公開頁，F2／F3 不綁定。"
+      },
+      "hero": "HDC  艾加拉法 +0/+0.5  1.82",
+      "stamp": "取",
+      "lineConfidence": {
+        "kind": "待公式",
+        "percent": null
+      },
+      "publishedAtWindow": "19:00",
+      "flags": [
+        "數據缺失"
+      ],
+      "invalidation": "失效條件  上盤賽前水位低於 1.75，且同場地勝率仍未達 60%，本場作廢。",
+      "path": {
+        "source": {
+          "pools": [
+            "HAD",
+            "HHA",
+            "HDC",
+            "HIL"
+          ],
+          "officialPreview": {
+            "kind": "none"
+          },
+          "homePage": "https://bet.hkjc.com/ch/football/home"
+        },
+        "water": {
+          "preMatchOdds": {
+            "status": "published",
+            "value": 1.82,
+            "isPreMatch": true,
+            "source": "bet.hkjc.com",
+            "verified": true
+          },
+          "band": "交界"
+        },
+        "depth": {
+          "line": "+0/+0.5",
+          "depth": "淺盤",
+          "inverted": false,
+          "invertedShallowFollow": false,
+          "inPlayDescriptiveOnly": false
+        },
+        "record": {
+          "n": null,
+          "wins": null,
+          "wUpper": null,
+          "uLower": null,
+          "binding": "不綁定",
+          "sameVenue": false
+        },
+        "intent": "無"
+      },
+      "filters": {
+        "f1": "未觸發",
+        "f2": "不適用",
+        "f3": "不適用"
+      }
+    }
+  ],
+  "history": []
+}

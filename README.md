@@ -1,38 +1,42 @@
 # 今日心水
 
-只讀足球心水板，給手機同桌面。介面跟已核准的設計頁：新聞紙底、40px 印戳欄、取／棄／觀，以及開波後同一套五步。平台不登入、不落注、沒有注碼單。
+只讀審稿版。公開資料，不下注、不登入。
 
-畫面上的場次同賠率係「示範賽程」，對應設計線框，不是香港賽馬會彩池，亦沒有從馬會網站擷取。
+每個定時刊次讀兩個公開頁：https://bet.hkjc.com/ch/football/home 與 https://football.hkjc.com 。賠率來自公開 GraphQL。盤口信心未有公式，已刊出的心水顯示「待公式」。
 
-## 點樣跑
+出刊時間只限香港時間 07:00、10:00、13:00、16:00、19:00、22:00。23:00 至 07:00 不開新刊。即場更新不是新刊。
+
+## 本地
 
 ```bash
 npm install
 npm run dev
 ```
 
-然後開 [http://127.0.0.1:43127](http://127.0.0.1:43127)。
+瀏覽器開 http://127.0.0.1:43127 。
 
-`npm run dev` 會喺本機起 Convex（唔使登入）、寫入示範賽程，再起 Vite。瀏覽器只連去 Vite；`/api` 會代理去本機 Convex。
-
-GitHub Pages 用同一套示範賽程，唔使連住呢部機嘅 Convex。推上 `main` 之後，Actions 會發佈到 `https://tempowong.github.io/today-picks/`。
-
-其他指令：
+手動提取當前刊次：
 
 ```bash
-npm test
-npm run typecheck
+node --experimental-strip-types scripts/fetch-board.mjs
 ```
+
+其他指令：`npm test`、`npm run typecheck`。
 
 ## 路由
 
-- `/` 今日一覽。窄屏係卡片；闊屏（約 1024 以上）係左列加右欄，預選進行中嘅追蹤場。
-- `/matches/$matchId` 單場詳情。窄屏有返回「今日心水」；闊屏仍然係一覽加右欄。
-- `?board=empty` 空日：今日未有已核對場次
-- `?board=stale` 過期：核對時間 14:02，仍顯示上次已核對內容
-- `?board=error` 讀取失敗，可重試
-- `?board=loading` 列骨架
+- `/` 今日：未開與進行中。預設列出全部，進行中在前。
+- `/m/$matchId` 單場五步。窄屏整卡進入；闊屏左列加右欄。
+- `/history` 往績：已完場。篩選全部／贏／輸／不入帳。
+- `?preview=before` 07:00 前，等待首刊
+- `?preview=between` 刊次之間，沿用上一刊
+- `?preview=empty` 今日未有已核對場次
+- `?preview=error` 無法讀取公開彩池，可重試
+- `?preview=loading` 列骨架
+- `?preview=qa` 版面示範佔位。正式版面不會讀這套場次。
 
-## 資料
+## 公開網站
 
-型別喺 `src/domain/types.ts`，由設計頁 `typesSource` 抽出。Convex schema 喺 `convex/schema.ts`。查詢 `board.today` 返回當日版面同賽事；`seed.reset` 寫入九場示範賽程。注碼只得棄單 $0 同細注 $50。
+https://tempowong.github.io/today-picks/
+
+GitHub Actions 在六個刊次提取公開彩池，然後更新網站。推程式碼本身不會當成新刊。

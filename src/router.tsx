@@ -1,6 +1,5 @@
-import { createRootRoute, createRoute, createRouter, Link, Outlet } from "@tanstack/react-router";
-import { BoardScreen } from "./ui/BoardScreen.tsx";
-import { readBoard } from "./search.ts";
+import { createRootRoute, createRoute, createRouter, Outlet } from "@tanstack/react-router";
+import { HistoryPage, TodayPage } from "./ui/Pitch.tsx";
 
 const rootRoute = createRootRoute({
   component: () => (
@@ -8,39 +7,61 @@ const rootRoute = createRootRoute({
       <Outlet />
     </div>
   ),
-  notFoundComponent: () => (
-    <main>
-      <Link to="/" className="back-link">
-        今日心水
-      </Link>
-      <p className="empty-hero">今日未有已核對場次</p>
-    </main>
-  ),
 });
+
+function readToday(search: Record<string, unknown>): { phase?: string; preview?: string } {
+  const result: { phase?: string; preview?: string } = {};
+  if (typeof search.phase === "string") result.phase = search.phase;
+  if (typeof search.preview === "string") result.preview = search.preview;
+  return result;
+}
+
+function readHistory(search: Record<string, unknown>): { filter?: string; preview?: string } {
+  const result: { filter?: string; preview?: string } = {};
+  if (typeof search.filter === "string") result.filter = search.filter;
+  if (typeof search.preview === "string") result.preview = search.preview;
+  return result;
+}
 
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/",
-  validateSearch: readBoard,
+  validateSearch: readToday,
   component: function IndexPage() {
-    const search = indexRoute.useSearch();
-    return <BoardScreen search={search} />;
+    return <TodayPage search={indexRoute.useSearch()} />;
   },
 });
 
 const matchRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: "/matches/$matchId",
-  validateSearch: readBoard,
+  path: "/m/$matchId",
+  validateSearch: readToday,
   component: function MatchPage() {
-    const search = matchRoute.useSearch();
     const { matchId } = matchRoute.useParams();
-    return <BoardScreen matchId={matchId} search={search} />;
+    return <TodayPage matchId={matchId} search={matchRoute.useSearch()} />;
   },
 });
 
-const routeTree = rootRoute.addChildren([indexRoute, matchRoute]);
+const historyRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/history",
+  validateSearch: readHistory,
+  component: function HistoryIndex() {
+    return <HistoryPage search={historyRoute.useSearch()} />;
+  },
+});
 
+const historyMatchRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/history/$matchId",
+  validateSearch: readHistory,
+  component: function HistoryMatch() {
+    const { matchId } = historyMatchRoute.useParams();
+    return <HistoryPage matchId={matchId} search={historyMatchRoute.useSearch()} />;
+  },
+});
+
+const routeTree = rootRoute.addChildren([indexRoute, matchRoute, historyRoute, historyMatchRoute]);
 const basepath = import.meta.env.BASE_URL.replace(/\/$/, "");
 
 export const router = createRouter({
