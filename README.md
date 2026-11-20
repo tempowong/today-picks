@@ -15,6 +15,8 @@ npm run dev
 
 `npm run dev` 會喺本機起 Convex（唔使登入）、寫入示範賽程，再起 Vite。瀏覽器只連去 Vite；`/api` 會代理去本機 Convex。
 
+GitHub Pages 用同一套示範賽程，唔使連住呢部機嘅 Convex。推上 `main` 之後，Actions 會發佈到 `https://tempowong.github.io/today-picks/`。
+
 其他指令：
 
 ```bash

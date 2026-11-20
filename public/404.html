@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="zh-Hant-HK">
+  <head>
+    <meta charset="UTF-8" />
+    <title>今日心水</title>
+    <script>
+      sessionStorage.setItem(
+        "today-picks-redirect",
+        location.pathname + location.search + location.hash,
+      );
+      location.replace("/today-picks/");
+    </script>
+  </head>
+  <body></body>
+</html>

@@ -10,6 +10,14 @@
     <title>今日心水</title>
   </head>
   <body>
+    <script>
+      (function () {
+        var redirect = sessionStorage.getItem("today-picks-redirect");
+        if (!redirect) return;
+        sessionStorage.removeItem("today-picks-redirect");
+        history.replaceState(null, "", redirect);
+      })();
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

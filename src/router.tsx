@@ -41,8 +41,11 @@ const matchRoute = createRoute({
 
 const routeTree = rootRoute.addChildren([indexRoute, matchRoute]);
 
+const basepath = import.meta.env.BASE_URL.replace(/\/$/, "");
+
 export const router = createRouter({
   routeTree,
+  ...(basepath ? { basepath } : {}),
   defaultPreload: "intent",
 });
 

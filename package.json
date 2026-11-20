@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "node scripts/dev.mjs",
     "build": "tsc -b && vite build",
+    "build:pages": "GITHUB_PAGES=true VITE_DATA_SOURCE=static tsc -b && GITHUB_PAGES=true VITE_DATA_SOURCE=static vite build",
     "typecheck": "tsc -b",
     "test": "node --experimental-strip-types --test src/domain/*.test.ts",
     "preview": "vite preview --host 0.0.0.0 --port 43127 --strictPort"

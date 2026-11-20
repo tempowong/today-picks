@@ -2,8 +2,10 @@ import { useQuery } from "convex/react";
 import { Component, type ReactNode, useEffect, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { api } from "../../convex/_generated/api";
+import { staticDemo } from "../dataMode.ts";
 import { countLine, countStamps, defaultMatchId } from "../domain/present.ts";
-import type { EditionView, SeedMatch } from "../domain/view.ts";
+import { staticBoard } from "../domain/staticBoard.ts";
+import type { EditionView, SeedMatch, TodayBoard } from "../domain/view.ts";
 import type { BoardSearch } from "../search.ts";
 import { useDesktop } from "../useDesktop.ts";
 import { Detail } from "./Detail.tsx";
@@ -47,12 +49,24 @@ function Header(props: { edition: EditionView; matches: SeedMatch[] }) {
   );
 }
 
-function LoadedBoard(props: { matchId?: string; search: BoardSearch; desktop: boolean; onRetry: () => void }) {
-  const board =
-    props.search.board === "empty" || props.search.board === "stale" || props.search.board === "error"
-      ? props.search.board
-      : "demo";
-  const data = useQuery(api.board.today, { board });
+type BoardProps = { matchId?: string; search: BoardSearch; desktop: boolean; onRetry: () => void };
+
+function boardName(search: BoardSearch): "demo" | "empty" | "stale" | "error" {
+  if (search.board === "empty" || search.board === "stale" || search.board === "error") return search.board;
+  return "demo";
+}
+
+function ConvexLoaded(props: BoardProps) {
+  const data = useQuery(api.board.today, { board: boardName(props.search) });
+  return <BoardView {...props} data={data} />;
+}
+
+function StaticLoaded(props: BoardProps) {
+  return <BoardView {...props} data={staticBoard(boardName(props.search))} />;
+}
+
+function BoardView(props: BoardProps & { data: TodayBoard | null | undefined }) {
+  const { data } = props;
   const selected = data?.matches.find((match) => match.id === props.matchId);
   const fallback = data?.matches.find((match) => match.id === defaultMatchId(data.matches));
   const shown = props.matchId ? selected : fallback;
@@ -132,7 +146,11 @@ export function BoardScreen(props: { matchId?: string; search: BoardSearch }) {
 
   return (
     <PoolBoundary key={`${props.search.board ?? "demo"}:${props.matchId ?? "list"}:${attempt}`} onRetry={retry}>
-      <LoadedBoard matchId={props.matchId} search={props.search} desktop={desktop} onRetry={retry} />
+      {staticDemo ? (
+        <StaticLoaded matchId={props.matchId} search={props.search} desktop={desktop} onRetry={retry} />
+      ) : (
+        <ConvexLoaded matchId={props.matchId} search={props.search} desktop={desktop} onRetry={retry} />
+      )}
     </PoolBoundary>
   );
 }
